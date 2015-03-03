@@ -1,0 +1,17 @@
+{
+  "name": "encoder",
+  "version": "1.0.0",
+  "description": "",
+  "main": "encoder.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "encoding": "^0.1.11",
+    "fs-extra": "^0.16.4",
+    "iconv-lite": "^0.4.7",
+    "minimist": "^1.1.0"
+  }
+}

@@ -2,7 +2,6 @@ var
 	Path = require("path"),
 	FS = require("fs-extra"),
 	Encoding = require("encoding"),
-	IconvLite = require("iconv-lite"),
 	Minimist = require("minimist");
 
 function Encoder(){
@@ -19,8 +18,8 @@ function Encoder(){
 		var params = Minimist(process.argv.slice(2));
 		if(!params.s || !params.d)
 			throw "source or destination directory missing";
-		sourceDir = params.s;
-		destDir = params.d;
+		sourceDir = Path.resolve(params.s);
+		destDir = Path.resolve(params.d);
 	}
 
 	function readDirRecursively(path) {
@@ -56,32 +55,22 @@ function Encoder(){
 	function encoding(readPath, writePath, tempPath){
 		FS.readFile(readPath, null, function (err, fileContents) {
 
-			console.log(readPath);
-
 			if(err)
 				console.error(err);
 			else {
-				try {
-					var output = Encoding.convert(fileContents, "UTF-8", "CP1252");
+				var output = Encoding.convert(fileContents, "UTF-8", "CP1252");
 
-					// var output = IconvLite.decode(fileContents, "win1252");
+				FS.outputFile(writePath, output, "utf8", function(err){
+					itemsRemaining--;
 
-					// FS.outputFile(writePath, output, "utf8", function(err){
-					// 	itemsRemaining--;
+					if(err)
+						console.error(err);
+					else
+						console.log("Converted: " + readPath);
 
-					// 	if(err)
-					// 		console.error(err);
-					// 	else
-					// 		console.log("Converted: " + readPath);
-
-					// 	if(itemsRemaining === 0)
-					// 		console.log("All done");
-					// });
-				}
-				catch(e){
-					console.error(readPath);
-					console.error(e.stack);
-				}
+					if(itemsRemaining === 0)
+						console.log("All done");
+				});
 			}
 		});
 	}
